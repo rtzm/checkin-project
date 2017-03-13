@@ -2,10 +2,6 @@
 # Wording, advice, and structure for this mindfulness exercise were largely pulled from "SOS for Emotions" by the NYU Student Health Center, authored by Reji Mathew, PhD, NYU Counseling and Wellness Services, Dialectical Behavior Therapy Clinical Team (https://www.nyu.edu/content/dam/nyu/studentHealthServices/documents/PDFs/mental-health/CWS_SOS_for_Emotions_Booklet.pdf).
 # To use this program, call it without arguments. If you call it with the argument 'log', you can get a report on your previous checkins.
 
-# features to add:
-# - retrieve notes to self?
-# - retrieve a report of emotions, intensity, etc.
-
 # BUSINESS LOGIC
 
 require 'sqlite3'
@@ -15,25 +11,25 @@ db = SQLite3::Database.new("checkins.db")
 
 # SQL command to make the tables if they don't exist.
 create_tables_cmd = <<-SQL
-  CREATE TABLE IF NOT EXISTS emotions(
-    id INT PRIMARY KEY,
-    name VARCHAR(32)
+CREATE TABLE IF NOT EXISTS emotions(
+  id INT PRIMARY KEY,
+  name VARCHAR(32)
   );
-  CREATE TABLE IF NOT EXISTS states(
-    id INT PRIMARY KEY,
-    name VARCHAR(32),
-    emotionID INT,
-    FOREIGN KEY (emotionID) REFERENCES emotions(id)
+CREATE TABLE IF NOT EXISTS states(
+  id INT PRIMARY KEY,
+  name VARCHAR(32),
+  emotionID INT,
+  FOREIGN KEY (emotionID) REFERENCES emotions(id)
   );
-  CREATE TABLE IF NOT EXISTS checkins(
-    time VARCHAR(32) PRIMARY KEY,
-    emotionID INT,
-    stateID INT,
-    intensity INT,
-    trigger VARCHAR(255),
-    noteToSelf BLOB,
-    FOREIGN KEY (emotionID) REFERENCES emotions(id),
-    FOREIGN KEY (stateID) REFERENCES state(id)
+CREATE TABLE IF NOT EXISTS checkins(
+  time VARCHAR(32) PRIMARY KEY,
+  emotionID INT,
+  stateID INT,
+  intensity INT,
+  trigger VARCHAR(255),
+  noteToSelf BLOB,
+  FOREIGN KEY (emotionID) REFERENCES emotions(id),
+  FOREIGN KEY (stateID) REFERENCES state(id)
   );
 SQL
 
@@ -42,55 +38,55 @@ db.execute_batch(create_tables_cmd)
 # Check if the emotions and states tables have been populated, and, if not, do so.
 unless db.execute("SELECT name FROM emotions;").any? { |row| row[0] == "joy" }
   populate_emotional_states_cmd = <<-SQL
-    INSERT OR IGNORE INTO emotions (id, name) VALUES (1, "anger");
-    INSERT OR IGNORE INTO emotions (id, name) VALUES (2, "joy");
-    INSERT OR IGNORE INTO emotions (id, name) VALUES (3, "sadness");
-    INSERT OR IGNORE INTO emotions (id, name) VALUES (4, "hurt");
-    INSERT OR IGNORE INTO emotions (id, name) VALUES (5, "fear");
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (1, "bothered", 1);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (2, "annoyed", 1);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (3, "bitter", 1);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (4, "angry", 1);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (5, "irritated", 1);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (6, "disgusted", 1);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (7, "frustrated", 1);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (8, "exasperated", 1);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (9, "furious", 1);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (10, "content", 2);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (11, "peaceful", 2);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (12, "relaxed", 2);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (13, "cheerful", 2);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (14, "satisfied", 2);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (15, "joyous", 2);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (16, "excited", 2);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (17, "ecstatic", 2);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (18, "happy", 2);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (19, "sad", 3);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (20, "depressed", 3);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (21, "distraught", 3);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (22, "despair", 3);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (23, "melancholy", 3);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (24, "grief", 3);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (25, "helpless", 3);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (26, "hopeless", 3);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (27, "miserable", 3);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (28, "lonely", 4);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (29, "homesick", 4);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (30, "abandoned", 4);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (31, "embarrassed", 4);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (32, "shame", 4);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (33, "guilt", 4);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (34, "foolish", 4);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (35, "humiliated", 4);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (36, "uncertain", 5);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (37, "worried", 5);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (38, "anxious", 5);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (39, "frightened", 5);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (40, "scared", 5);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (41, "nervous", 5);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (42, "afraid", 5);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (43, "terrified", 5);
-    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (44, "overwhelmed", 5);
+  INSERT OR IGNORE INTO emotions (id, name) VALUES (1, "anger");
+  INSERT OR IGNORE INTO emotions (id, name) VALUES (2, "joy");
+  INSERT OR IGNORE INTO emotions (id, name) VALUES (3, "sadness");
+  INSERT OR IGNORE INTO emotions (id, name) VALUES (4, "hurt");
+  INSERT OR IGNORE INTO emotions (id, name) VALUES (5, "fear");
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (1, "bothered", 1);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (2, "annoyed", 1);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (3, "bitter", 1);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (4, "angry", 1);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (5, "irritated", 1);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (6, "disgusted", 1);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (7, "frustrated", 1);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (8, "exasperated", 1);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (9, "furious", 1);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (10, "content", 2);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (11, "peaceful", 2);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (12, "relaxed", 2);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (13, "cheerful", 2);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (14, "satisfied", 2);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (15, "joyous", 2);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (16, "excited", 2);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (17, "ecstatic", 2);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (18, "happy", 2);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (19, "sad", 3);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (20, "depressed", 3);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (21, "distraught", 3);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (22, "despair", 3);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (23, "melancholy", 3);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (24, "grief", 3);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (25, "helpless", 3);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (26, "hopeless", 3);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (27, "miserable", 3);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (28, "lonely", 4);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (29, "homesick", 4);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (30, "abandoned", 4);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (31, "embarrassed", 4);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (32, "shame", 4);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (33, "guilt", 4);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (34, "foolish", 4);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (35, "humiliated", 4);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (36, "uncertain", 5);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (37, "worried", 5);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (38, "anxious", 5);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (39, "frightened", 5);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (40, "scared", 5);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (41, "nervous", 5);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (42, "afraid", 5);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (43, "terrified", 5);
+  INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (44, "overwhelmed", 5);
   SQL
   db.execute_batch(populate_emotional_states_cmd)
 end
@@ -194,9 +190,9 @@ end
 def print_log(db, limit=Float::INFINITY)
   # generate SQL query that can pull the log, replace the ids from each table with the emotion/state names, etc
   qry_checkins_cmd = <<-SQL
-    SELECT time, emotions.name, states.name, intensity
-    FROM (checkins LEFT JOIN emotions ON checkins.emotionID = emotions.id) LEFT JOIN states
-    ON checkins.stateID = states.id;
+  SELECT time, emotions.name, states.name, intensity
+  FROM (checkins LEFT JOIN emotions ON checkins.emotionID = emotions.id) LEFT JOIN states
+  ON checkins.stateID = states.id;
   SQL
 
   # make header row
@@ -223,9 +219,9 @@ def review_notes_to_self(db)
   # generate SQL queries that pull the times and all from the noteToSelf attribute, numbered
 
   pull_notes_cmd = <<-SQL
-    SELECT time, emotions.name, states.name, trigger, noteToSelf
-    FROM (checkins JOIN emotions ON checkins.emotionID = emotions.id) LEFT JOIN states
-    ON checkins.stateID = states.id;
+  SELECT time, emotions.name, states.name, trigger, noteToSelf
+  FROM (checkins JOIN emotions ON checkins.emotionID = emotions.id) LEFT JOIN states
+  ON checkins.stateID = states.id;
   SQL
   entries = db.execute(pull_notes_cmd)
   puts
