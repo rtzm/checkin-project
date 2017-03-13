@@ -11,10 +11,9 @@
 require 'sqlite3'
 require_relative 'emotion_list'
 
-
 db = SQLite3::Database.new("checkins.db")
 
-
+# SQL command to make the tables if they don't exist.
 create_tables_cmd = <<-SQL
   CREATE TABLE IF NOT EXISTS emotions(
     id INT PRIMARY KEY,
@@ -40,71 +39,71 @@ SQL
 
 db.execute_batch(create_tables_cmd)
 
+# Check if the emotions and states tables have been populated, and, if not, do so.
 unless db.execute("SELECT name FROM emotions;").any? { |row| row[0] == "joy" }
-  puts "First time running, populating database..."
   populate_emotional_states_cmd = <<-SQL
     INSERT OR IGNORE INTO emotions (id, name) VALUES (1, "anger");
     INSERT OR IGNORE INTO emotions (id, name) VALUES (2, "joy");
     INSERT OR IGNORE INTO emotions (id, name) VALUES (3, "sadness");
     INSERT OR IGNORE INTO emotions (id, name) VALUES (4, "hurt");
     INSERT OR IGNORE INTO emotions (id, name) VALUES (5, "fear");
-
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("bothered", 1);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("annoyed", 1);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("bitter", 1);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("angry", 1);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("irritated", 1);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("disgusted", 1);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("frustrated", 1);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("exasperated", 1);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("furious", 1);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("content", 2);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("peaceful", 2);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("relaxed", 2);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("cheerful", 2);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("satisfied", 2);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("joyous", 2);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("excited", 2);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("ecstatic", 2);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("happy", 2);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("sad", 3);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("depressed", 3);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("distraught", 3);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("despair", 3);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("melancholy", 3);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("grief", 3);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("helpless", 3);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("hopeless", 3);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("miserable", 3);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("lonely", 4);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("homesick", 4);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("abandoned", 4);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("embarrassed", 4);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("shame", 4);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("guilt", 4);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("foolish", 4);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("humiliated", 4);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("uncertain", 5);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("worried", 5);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("anxious", 5);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("frightened", 5);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("scared", 5);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("nervous", 5);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("afraid", 5);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("terrified", 5);
-    INSERT OR IGNORE INTO states (name, emotionID) VALUES ("overwhelmed", 5);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (1, "bothered", 1);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (2, "annoyed", 1);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (3, "bitter", 1);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (4, "angry", 1);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (5, "irritated", 1);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (6, "disgusted", 1);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (7, "frustrated", 1);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (8, "exasperated", 1);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (9, "furious", 1);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (10, "content", 2);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (11, "peaceful", 2);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (12, "relaxed", 2);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (13, "cheerful", 2);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (14, "satisfied", 2);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (15, "joyous", 2);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (16, "excited", 2);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (17, "ecstatic", 2);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (18, "happy", 2);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (19, "sad", 3);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (20, "depressed", 3);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (21, "distraught", 3);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (22, "despair", 3);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (23, "melancholy", 3);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (24, "grief", 3);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (25, "helpless", 3);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (26, "hopeless", 3);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (27, "miserable", 3);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (28, "lonely", 4);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (29, "homesick", 4);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (30, "abandoned", 4);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (31, "embarrassed", 4);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (32, "shame", 4);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (33, "guilt", 4);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (34, "foolish", 4);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (35, "humiliated", 4);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (36, "uncertain", 5);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (37, "worried", 5);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (38, "anxious", 5);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (39, "frightened", 5);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (40, "scared", 5);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (41, "nervous", 5);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (42, "afraid", 5);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (43, "terrified", 5);
+    INSERT OR IGNORE INTO states (id, name, emotionID) VALUES (44, "overwhelmed", 5);
   SQL
   db.execute_batch(populate_emotional_states_cmd)
 end
 
+# Print list of emotions, stored in emotion_list.rb for easier reference
 def print_emotion_list
   EMOTION_LIST.each do |emotion, states|
     puts emotion.upcase + ":"
     puts "   " + states.join(", ")
   end
-
 end
 
+# Breathing exercise to be run if the intensity of negative emotions is greater than 5
 def breathing_exercise
   4.times do
     4.times { |n| puts "BREATHE IN  " + (">" * (n+1)) + ("." * (3-n)); sleep 1 }
@@ -113,8 +112,8 @@ def breathing_exercise
   end
 end
 
+# Add this checkin into the checkins database in checkins.db
 def add_checkin(db, emotional_state, intensity, trigger_note, note_to_self)
-
   # look up the emotion ID and state ID for a given emotion and state contained in emotional_state hash
   emotion_id = db.get_first_value("SELECT id FROM emotions WHERE name = ?", emotional_state[:emotion])
   if emotional_state[:state]
@@ -123,18 +122,20 @@ def add_checkin(db, emotional_state, intensity, trigger_note, note_to_self)
     state_id = "null"
   end
 
+  # format current time as a string and note_to_self as a blob
   time_now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
   note_to_self = note_to_self.to_blob if note_to_self
 
   db.execute("INSERT INTO checkins (time, emotionID, stateID, intensity, trigger, noteToSelf) VALUES (?, ?, ?, ?, ?, ?)", [time_now, emotion_id, state_id, intensity ||= "null", trigger_note ||= "null", note_to_self ||= "null"])
 end
 
-
+# used to add some mindful wait time so user can observe emotions
 def pause_for(seconds)
   seconds.times { |s| print ((seconds - s).to_s + "... ") ; sleep 1 }
   puts
 end
 
+# used to put the feeling that the user feels into terms readable for our databases
 def categorize_feeling(feeling)
   if feeling.downcase == "more"
     puts
@@ -143,18 +144,22 @@ def categorize_feeling(feeling)
     puts "Pick a word from the list above that describes how you're feeling right now."
     return categorize_feeling(gets.chomp)
   elsif EMOTION_LIST.keys.include?(feeling.downcase)
+    # emotion named by user, but not a secondary state
     categorized = { emotion: feeling.downcase, state: nil }
   else
     EMOTION_LIST.each do |emotion, states|
       if states.include?(feeling.downcase)
+        # emotion and state named by user
         categorized = { emotion: emotion, state: feeling.downcase }
       end
     end
   end
   return categorized if defined? categorized
+  # User gave invalid input, run again
   return categorize_feeling("more")
 end
 
+# Read in list of tasks that the user wants to remember for later.
 def get_tasks
   note_to_self = ""
   task = gets.chomp
@@ -165,6 +170,7 @@ def get_tasks
   return note_to_self
 end
 
+# Help page to be run when given the argument 'help', 'h', '--h' or '--help'
 def display_help
   puts "checkin - a tool to integrate mindful checkins into your git workflow"
   puts
@@ -185,19 +191,42 @@ def display_help
   exit
 end
 
-def print_log(limit=Float::INFINITY)
+def print_log(db, limit=Float::INFINITY)
   # generate SQL query that can pull the log, replace the ids from each table with the emotion/state names, etc
+  qry_checkins_cmd = <<-SQL
+    SELECT time, emotions.name, states.name, intensity
+    FROM (checkins LEFT JOIN emotions ON checkins.emotionID = emotions.id) LEFT JOIN states
+    ON checkins.stateID = states.id;
+  SQL
+
+  # make header row
+  puts "Checkin time         | Emotion      | Emotional state  | Intensity "
+  puts "---------------------|--------------|------------------|-----------"
+
+  # initialize incrementer to test if going past limit
+  i = 1
+
   # print that SQL query for each row, going back as long as incrementer is less than limit
+  rows = db.execute(qry_checkins_cmd)
+  rows.reverse_each do |row|
+    next if i > limit
+
+    # turn all null or nil values and all numbers into strings
+    row.map!(&:to_s)
+    puts row[0].ljust(21) + "| " + row[1].ljust(13) + "| " + row[2].ljust(17) + "| " + row[3].ljust(9)
+    i += 1
+  end
   exit
 end
 
-def review_notes_to_self
+def review_notes_to_self(db)
   # generate SQL queries that pull the times and all from the noteToSelf attribute, numbered
   exit
 end
 
 # DRIVER CODE
 
+# parse arguments passed to program
 if ARGV[0]
   option = ARGV[0]
   case option.downcase
@@ -205,14 +234,16 @@ if ARGV[0]
     display_help
   when "log", "l"
     if ARGV[1]
-      print_log(ARGV[1])
+      print_log(db, ARGV[1].to_i)
     else
-      print_log
+      print_log(db)
     end
   when "pull", "p"
-    review_notes_to_self
+    review_notes_to_self(db)
   end
 end
+
+# begin main checkin process
 
 puts
 puts "OBSERVE how you're feeling."
@@ -235,6 +266,7 @@ intensity = 0 if intensity < 0
 intsensity = 10 if intensity > 10
 puts
 
+# begin intervention due to high negative emotions
 if intensity > 5 and emotional_state[:emotion] != "joy"
   puts "Okay, let's take a couple of breaths, then let's talk about our options."
   puts
@@ -307,7 +339,8 @@ end
 puts "Thanks for checking in with yourself!"
 puts "If you want to see a log of your checkins, open this file again with the argument 'log'."
 if note_to_self != "null"
-  puts "And to check the note you left yourself just now or in previous checkins, open this files with the argument 'pull'."
+  puts "And to check the note you left yourself just now or in previous checkins, open this file with the argument 'pull'."
 end
 
+# store checkin to database
 add_checkin(db, emotional_state, intensity, trigger_note, note_to_self)
