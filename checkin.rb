@@ -119,19 +119,19 @@ def add_checkin(db, emotional_state, intensity, trigger_note, note_to_self)
   if emotional_state[:state]
     state_id = db.get_first_value("SELECT id FROM states WHERE name = ?", emotional_state[:state])
   else
-    state_id = "null"
+    state_id = nil
   end
 
   # format current time as a string and note_to_self as a blob
   time_now = Time.now.strftime("%Y-%m-%d %H:%M:%S")
   note_to_self = note_to_self.to_blob if note_to_self
 
-  db.execute("INSERT INTO checkins (time, emotionID, stateID, intensity, trigger, noteToSelf) VALUES (?, ?, ?, ?, ?, ?)", [time_now, emotion_id, state_id, intensity ||= "null", trigger_note ||= "null", note_to_self ||= "null"])
+  db.execute("INSERT INTO checkins (time, emotionID, stateID, intensity, trigger, noteToSelf) VALUES (?, ?, ?, ?, ?, ?)", [time_now, emotion_id, state_id, intensity ||= nil, trigger_note ||= nil, note_to_self ||= nil])
 end
 
 # used to add some mindful wait time so user can observe emotions
 def pause_for(seconds)
-  seconds.times { |s| print ((seconds - s).to_s + "... ") ; sleep 1 }
+  # seconds.times { |s| print ((seconds - s).to_s + "... ") ; sleep 1 }
   puts
 end
 
@@ -167,7 +167,7 @@ def get_tasks
     note_to_self += " o " + task + "\n"
     task = gets.chomp
   end
-  return note_to_self
+  return note_to_self.chomp
 end
 
 # Help page to be run when given the argument 'help', 'h', '--h' or '--help'
@@ -221,6 +221,27 @@ end
 
 def review_notes_to_self(db)
   # generate SQL queries that pull the times and all from the noteToSelf attribute, numbered
+
+  pull_notes_cmd = <<-SQL
+    SELECT time, emotions.name, states.name, trigger, noteToSelf
+    FROM (checkins JOIN emotions ON checkins.emotionID = emotions.id) LEFT JOIN states
+    ON checkins.stateID = states.id;
+  SQL
+  entries = db.execute(pull_notes_cmd)
+  puts
+  entries.each do |entry|
+    next unless entry[3] or entry[4]
+    puts "Date and time: " + entry[0]
+    print "Emotional state: " + entry[1]
+    print ", " + entry[2] if entry[2] # checking if state is nil
+    print "\n"
+    puts "Trigger: " + entry[3] if entry[3]
+    puts
+    puts "Note to self: \n\n" + entry[4] if entry[4]
+    puts
+    puts " -=- -=- -=- -=- -=- -=- -=- -=- "
+    puts
+  end
   exit
 end
 
@@ -270,7 +291,7 @@ puts
 if intensity > 5 and emotional_state[:emotion] != "joy"
   puts "Okay, let's take a couple of breaths, then let's talk about our options."
   puts
-  breathing_exercise
+  # breathing_exercise
   puts
   puts "Now, let's talk about your options for right now, before you start your work."
   puts "-= You can CHANGE your situation, environment or reactions."
@@ -332,13 +353,13 @@ if intensity > 5 and emotional_state[:emotion] != "joy"
     puts "Now that you've logged how you're feeling and what might have caused it, think about how you don't have to hold onto that trigger anymore if you don't want to."
     puts
   else
-    note_to_self = "null"
+    note_to_self = nil
   end
 end
 
 puts "Thanks for checking in with yourself!"
 puts "If you want to see a log of your checkins, open this file again with the argument 'log'."
-if note_to_self != "null"
+if note_to_self != nil
   puts "And to check the note you left yourself just now or in previous checkins, open this file with the argument 'pull'."
 end
 
