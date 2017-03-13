@@ -131,7 +131,7 @@ end
 
 # used to add some mindful wait time so user can observe emotions
 def pause_for(seconds)
-  # seconds.times { |s| print ((seconds - s).to_s + "... ") ; sleep 1 }
+  seconds.times { |s| print ((seconds - s).to_s + "... ") ; sleep 1 }
   puts
 end
 
@@ -291,7 +291,7 @@ puts
 if intensity > 5 and emotional_state[:emotion] != "joy"
   puts "Okay, let's take a couple of breaths, then let's talk about our options."
   puts
-  # breathing_exercise
+  breathing_exercise
   puts
   puts "Now, let's talk about your options for right now, before you start your work."
   puts "-= You can CHANGE your situation, environment or reactions."
