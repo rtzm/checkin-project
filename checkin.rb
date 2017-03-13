@@ -117,7 +117,6 @@ def add_checkin(db, emotional_state, intensity, trigger_note, note_to_self)
 
   # look up the emotion ID and state ID for a given emotion and state contained in emotional_state hash
   emotion_id = db.get_first_value("SELECT id FROM emotions WHERE name = ?", emotional_state[:emotion])
-  emotion_id = 0
   if emotional_state[:state]
     state_id = db.get_first_value("SELECT id FROM states WHERE name = ?", emotional_state[:state])
   else
