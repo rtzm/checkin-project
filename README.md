@@ -19,3 +19,5 @@ This program has three optional arguments:
 - pull, or p
 
   - Review your previous notes to self made through this program.
+
+If you've installed this as a gem, you should be able to run it just by typing `checkin' into bash, with optional arguments. However, this is my first attempt at making an executable gem, so there seem to be some issues. Such as an unalerted dependency on the ruby gem sqlite3.
