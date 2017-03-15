@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.files       = ["lib/checkin.rb", "lib/emotion_list.rb", "README.md"]
   s.homepage    =
     'https://github.com/rtzm/checkin-project'
-  s.add_runtime_dependency 'sqlite3', ['>=0']
+  s.add_runtime_dependency 'sqlite3', ['~> 0']
   s.license       = 'MIT'
   s.executables   = ["checkin"]
 end
