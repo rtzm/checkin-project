@@ -7,7 +7,7 @@
 require 'sqlite3'
 require_relative 'emotion_list'
 
-db = SQLite3::Database.new("checkins.db")
+db = SQLite3::Database.new(File.join(Dir.home, ".checkins.db"))
 
 # SQL command to make the tables if they don't exist.
 create_tables_cmd = <<-SQL
