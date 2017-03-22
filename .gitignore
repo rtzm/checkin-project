@@ -26,6 +26,7 @@
 *.sql
 *.sqlite
 *.db
+*.ruby-vesion
 
 # OS generated files #
 ######################
