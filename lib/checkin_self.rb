@@ -143,12 +143,8 @@ def categorize_feeling(feeling)
     # emotion named by user, but not a secondary state
     categorized = { emotion: feeling.downcase, state: nil }
   else
-    EMOTION_LIST.each do |emotion, states|
-      if states.include?(feeling.downcase)
-        # emotion and state named by user
-        categorized = { emotion: emotion, state: feeling.downcase }
-      end
-    end
+    matching_emotion = EMOTION_LIST.select {|emotion, states| states.include? feeling.downcase}
+    categorized = { emotion: matching_emotion.keys[0], state: feeling.downcase }
   end
   return categorized if defined? categorized
   # User gave invalid input, run again
