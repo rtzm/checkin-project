@@ -138,7 +138,7 @@ def categorize_feeling(feeling)
     print_emotion_list
     puts
     puts "Pick a word from the list above that describes how you're feeling right now."
-    return categorize_feeling(gets.chomp)
+    return categorize_feeling(STDIN.gets.chomp)
   elsif EMOTION_LIST.keys.include?(feeling.downcase)
     # emotion named by user, but not a secondary state
     categorized = { emotion: feeling.downcase, state: nil }
@@ -154,10 +154,10 @@ end
 # Read in list of tasks that the user wants to remember for later.
 def get_tasks
   note_to_self = ""
-  task = gets.chomp
+  task = STDIN.gets.chomp
   until task.downcase == "done"
     note_to_self += " o " + task + "\n"
-    task = gets.chomp
+    task = STDIN.gets.chomp
   end
   return note_to_self.chomp
 end
@@ -180,6 +180,9 @@ def display_help
   puts
   puts "pull, or p"
   puts "Review your previous notes to self made through this program."
+  puts
+  puts "hook, or --hook, with optional hook name"
+  puts "Attaches this checkin to a githook in the current git repository, so that checkin_self is automatically called every time you run a specific git command for the current repository. Defaults to post-checkout hook if no argument given. See this page for further documentation on githooks: https://git-scm.com/docs/githooks."
   exit
 end
 
@@ -237,6 +240,55 @@ def review_notes_to_self(db)
   exit
 end
 
+def githook(hook_name="post-checkout")
+  git_dir = find_git_dir
+  hook_filename = hook_name || "post-checkout"
+  acceptable_hooks = ["applypatch-msg","pre-applypatch","post-applypatch","pre-commit","prepare-commit-msg","commit-msg","post-commit","pre-rebase","post-checkout","post-merge","pre-push","pre-receive","update","post-receive","post-update","push-to-checkout","pre-auto-gc","post-rewrite","rebase"]
+  unless acceptable_hooks.include? hook_filename
+    puts "Please provide an acceptable hook name. Refer to this page for information:"
+    puts "https://git-scm.com/docs/githooks"
+    exit
+  end
+  if git_dir
+    # check if .git/hooks contains file matching current hook
+    hooks_dir = File.join(git_dir, "hooks")
+    hook_full_path = File.join(hooks_dir, hook_filename)
+    unless File.exist? hook_full_path
+      hook_file = File.open(hook_full_path, "w") do |file|
+        file.puts "#!/usr/bin/env ruby"
+        file.puts "require 'checkin_self'"
+      end
+      system("chmod +x #{hook_full_path}")
+      puts "Added githook on hook #{hook_filename}, located in hooks folder #{hooks_dir}"
+      exit
+    else
+      puts "Githook for this action (#{hook_filename}) already exists... exiting..."
+      puts "See this stackoverflow answer on attaching multiple scripts to same hook:\nhttp://stackoverflow.com/questions/30104343/multiple-git-hooks-for-the-same-trigger"
+      exit
+    end
+  else
+    puts "No git repository found... exiting... "
+    exit
+  end
+end
+
+def find_git_dir
+  # find .git directory
+  if File.exist? ".git"
+    return File.join(Dir.pwd,".git")
+  else
+    # find path to parent directory
+    index_of_parent_separator = Dir.pwd.rindex(File::SEPARATOR)
+    parent_dir_name = Dir.pwd[0...index_of_parent_separator]
+
+    if File.exist? parent_dir_name
+      Dir.chdir(parent_dir_name) { find_git_dir }
+    else
+      return false
+    end
+  end
+end
+
 # DRIVER CODE
 
 # parse arguments passed to program
@@ -253,6 +305,8 @@ if ARGV[0]
     end
   when "pull", "p"
     review_notes_to_self(db)
+  when "hook", "--hook"
+    githook(ARGV[1])
   end
 end
 
@@ -270,11 +324,11 @@ puts "anger -=- joy -=- sadness -=- hurt -=- fear"
 puts
 puts "Type 'more' for a list of more words to help you figure out what you're feeling and how we'll categorize it."
 
-emotional_state = categorize_feeling(gets.chomp)
+emotional_state = categorize_feeling(STDIN.gets.chomp)
 puts
 
 puts "How strong is that feeling on a scale of 0 to 10?"
-intensity = gets.chomp.to_i
+intensity = STDIN.gets.chomp.to_i
 intensity = 0 if intensity < 0
 intsensity = 10 if intensity > 10
 puts
@@ -291,10 +345,10 @@ if intensity > 5 and emotional_state[:emotion] != "joy"
   puts "-= Or you can choose to try and LET GO of this feeling before you start your work."
   puts
   puts "What do you want to do right now? Type 'change', 'accept' or 'let go', or anything else to skip this."
-  intervention = gets.chomp
+  intervention = STDIN.gets.chomp
   puts
   puts "Think for a minute about what prompted or triggered this feeling. Think for a minute. Type a quick note to yourself about it to remind you later if you'd like, or press enter when ready."
-  trigger_note = gets.chomp
+  trigger_note = STDIN.gets.chomp
   puts
   case intervention.downcase
   when "change"
@@ -316,7 +370,7 @@ if intensity > 5 and emotional_state[:emotion] != "joy"
     puts "- Grab a healthy snack, or drink a glass of water."
     puts
     puts "When you've done that, come back and hit 'enter' so we can start coding."
-    gets.chomp
+    STDIN.gets.chomp
     puts
   when "accept"
     puts "Here are some things you might want to remind yourself about this trigger and your reaction to it:"
@@ -329,7 +383,7 @@ if intensity > 5 and emotional_state[:emotion] != "joy"
     puts "- It is as it is, but it won't stay that way. It will pass."
     puts
     puts "Jot down a thought about what accepting this means to you, so you can remember this later."
-    note_to_self = gets.chomp
+    note_to_self = STDIN.gets.chomp
     puts
 
   when "let go"
@@ -340,7 +394,7 @@ if intensity > 5 and emotional_state[:emotion] != "joy"
     puts "- What would I want to do differently next time?"
     puts
     puts "Jot a note to yourself about this. Hit enter when done."
-    note_to_self = gets.chomp
+    note_to_self = STDIN.gets.chomp
     puts
     puts "Now that you've logged how you're feeling and what might have caused it, think about how you don't have to hold onto that trigger anymore if you don't want to."
     puts
