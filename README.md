@@ -1,6 +1,6 @@
 # checkin-project
 
-checkin - a tool to integrate mindful checkins into your git workflow
+checkin_self - a tool to integrate mindful checkins into your git workflow
 
 Wording, advice, and structure for this mindfulness exercise were largely pulled from 'SOS for Emotions' by the NYU Student Health Center, authored by Reji Mathew, PhD, NYU Counseling and Wellness Services, Dialectical Behavior Therapy Clinical Team (https://www.nyu.edu/content/dam/nyu/studentHealthServices/documents/PDFs/mental-health/CWS_SOS_for_Emotions_Booklet.pdf).
 
@@ -20,4 +20,14 @@ This program has three optional arguments:
 
   - Review your previous notes to self made through this program.
 
-If you've installed this as a gem, you should be able to run it just by typing `checkin' into bash, with optional arguments. However, this is my first attempt at making an executable gem, so there seem to be some issues. Such as an unalerted dependency on the ruby gem sqlite3.
+- hook, or --hook, with optional hook name as second argument
+
+  - Attaches this checkin to a githook in the current git repository, so that checkin_self is automatically called every time you run a specific git command for the current repository. Defaults to post-checkout hook if no argument given. See this page for further documentation on githooks: https://git-scm.com/docs/githooks.
+
+If you've installed this as a gem, you should be able to run it just by typing `checkin_self' into bash, with optional arguments.
+
+Future changes to be made:
+
+- Changing from a sqlite database to some flatter data storage?
+- making a gemfile to alert sqlite dependencies
+- making more object-oriented, and splitting into multiple files
