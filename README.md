@@ -6,11 +6,11 @@ Wording, advice, and structure for this mindfulness exercise were largely pulled
 
 This program is designed to be used when you checkout a git branch, so that you can checkin with yourself before you start on some coding work. If you're feeling somewhat to very intense negative emotions, you're encouraged to address those before you start your work, and leave a note to yourself to be reviewed later.
 
-This program has three optional arguments:
+This program has four optional arguments:
 
-- help, h, --help, or --h
+- hook, or --hook, with optional hook name as second argument
 
-  - Displays this help screen.
+  - Attaches this checkin to a githook in the current git repository, so that checkin_self is automatically called every time you run a specific git command for the current repository. Defaults to post-checkout hook if no argument given. See this page for further documentation on githooks: https://git-scm.com/docs/githooks.
 
 - log, or l, with optional integer
 
@@ -20,9 +20,9 @@ This program has three optional arguments:
 
   - Review your previous notes to self made through this program.
 
-- hook, or --hook, with optional hook name as second argument
+- help, h, --help, or --h
 
-  - Attaches this checkin to a githook in the current git repository, so that checkin_self is automatically called every time you run a specific git command for the current repository. Defaults to post-checkout hook if no argument given. See this page for further documentation on githooks: https://git-scm.com/docs/githooks.
+  - Displays help screen.
 
 If you've installed this as a gem, you should be able to run it just by typing `checkin_self' into bash, with optional arguments.
 
@@ -30,4 +30,5 @@ Future changes to be made:
 
 - Changing from a sqlite database to some flatter data storage?
 - making a gemfile to alert sqlite dependencies
-- making more object-oriented, and splitting into multiple files
+- improving object-oriented design
+- Use highline to improve the readability of the text in command-line
