@@ -170,7 +170,7 @@ def display_help
   puts
   puts "This program is designed to be used when you checkout a git branch, so that you can checkin with yourself before you start on some coding work. If you're feeling somewhat to very intense negative emotions, you're encouraged to address those before you start your work, and leave a note to yourself to be reviewed later."
   puts
-  puts "This program has three optional arguments:"
+  puts "This program has four optional arguments:"
   puts
   puts "help, h, --help, or --h"
   puts "Displays this help screen."
