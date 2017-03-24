@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'checkin_self'
-  s.version     = '0.2.0'
+  s.version     = '0.2.1'
   s.date        = '2017-03-24'
   s.summary     = 'checkin_self'
   s.description = 'A tool to integrate mindful checkins into your git workflow'
