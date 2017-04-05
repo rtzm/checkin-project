@@ -29,6 +29,5 @@ If you've installed this as a gem, you should be able to run it just by typing `
 Future changes to be made:
 
 - Changing from a sqlite database to some flatter data storage?
-- making a gemfile to alert sqlite dependencies
 - improving object-oriented design
 - Use highline to improve the readability of the text in command-line
